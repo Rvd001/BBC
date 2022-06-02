@@ -1,0 +1,196 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "718b69cd",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2022-06-02T07:54:38.762067Z",
+     "iopub.status.busy": "2022-06-02T07:54:38.761617Z",
+     "iopub.status.idle": "2022-06-02T07:54:41.034930Z",
+     "shell.execute_reply": "2022-06-02T07:54:41.033965Z"
+    },
+    "papermill": {
+     "duration": 2.281978,
+     "end_time": "2022-06-02T07:54:41.038442",
+     "exception": false,
+     "start_time": "2022-06-02T07:54:38.756464",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[nltk_data] Downloading package stopwords to /usr/share/nltk_data...\n",
+      "[nltk_data]   Package stopwords is already up-to-date!\n",
+      "[nltk_data] Downloading package wordnet to /usr/share/nltk_data...\n",
+      "[nltk_data]   Package wordnet is already up-to-date!\n"
+     ]
+    }
+   ],
+   "source": [
+    "# utilities\n",
+    "import datetime\n",
+    "import json\n",
+    "import os, sys\n",
+    "import re\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import time\n",
+    "\n",
+    "\n",
+    "# plotting\n",
+    "import seaborn as sns\n",
+    "from wordcloud import WordCloud\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "\n",
+    "# Natural Language Toolkit (nltk)\n",
+    "from nltk.stem import WordNetLemmatizer\n",
+    "from nltk import download\n",
+    "download('stopwords')\n",
+    "download('wordnet')\n",
+    "from nltk.corpus import stopwords\n",
+    "\n",
+    "\n",
+    "\n",
+    "#Topic Modeling\n",
+    "from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer\n",
+    "from sklearn import decomposition"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "f9d649f0",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2022-06-02T07:54:41.047458Z",
+     "iopub.status.busy": "2022-06-02T07:54:41.046933Z",
+     "iopub.status.idle": "2022-06-02T07:54:41.057974Z",
+     "shell.execute_reply": "2022-06-02T07:54:41.056669Z"
+    },
+    "papermill": {
+     "duration": 0.017848,
+     "end_time": "2022-06-02T07:54:41.060313",
+     "exception": false,
+     "start_time": "2022-06-02T07:54:41.042465",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "def read_category():\n",
+    "    for dirname, _, filenames in os.walk('/kaggle/input'):\n",
+    "        filenames.sort()\n",
+    "        business_files = []\n",
+    "        for filename in filenames:\n",
+    "            business_files.append(os.path.join(dirname, filename))\n",
+    "    \n",
+    "    \n",
+    "    ent_files = [file for file in business_files if file.endswith(\".txt\")]\n",
+    "    raw_documents = []\n",
+    "    snippets = []\n",
+    "    for index in range(0, len(ent_files)):\n",
+    "        with open(ent_files[index], \"r\") as fin: #must have exactly one of create/read/write/append mode\n",
+    "            for line in fin.readlines():\n",
+    "                text = line.strip()\n",
+    "                raw_documents.append(text)\n",
+    "                snippets.append(text[0:min(len(text),10)])\n",
+    "    print(\"Read %d raw text documents\" % len(raw_documents))\n",
+    "    return raw_documents\n",
+    "    \n",
+    "    \n",
+    "    #return business_files"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "27527310",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2022-06-02T07:54:41.067294Z",
+     "iopub.status.busy": "2022-06-02T07:54:41.066598Z",
+     "iopub.status.idle": "2022-06-02T07:54:42.818632Z",
+     "shell.execute_reply": "2022-06-02T07:54:42.816987Z"
+    },
+    "papermill": {
+     "duration": 1.758885,
+     "end_time": "2022-06-02T07:54:42.821656",
+     "exception": false,
+     "start_time": "2022-06-02T07:54:41.062771",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Read 4860 raw text documents\n"
+     ]
+    }
+   ],
+   "source": [
+    "Business = read_category()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26f63067",
+   "metadata": {
+    "papermill": {
+     "duration": 0.002127,
+     "end_time": "2022-06-02T07:54:42.826382",
+     "exception": false,
+     "start_time": "2022-06-02T07:54:42.824255",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.12"
+  },
+  "papermill": {
+   "default_parameters": {},
+   "duration": 15.315025,
+   "end_time": "2022-06-02T07:54:43.753022",
+   "environment_variables": {},
+   "exception": null,
+   "input_path": "__notebook__.ipynb",
+   "output_path": "__notebook__.ipynb",
+   "parameters": {},
+   "start_time": "2022-06-02T07:54:28.437997",
+   "version": "2.3.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
